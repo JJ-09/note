@@ -3,39 +3,40 @@
 文件：Linux系统中7种文件类型，b(块设备文件)、s(套接字文件)、p(管道文件)、-(普通文件)、l(链接文件)、c(字符设备文件)、d(目录文件)
 
 ### 概念
->在C语言标准库中定义的一组用于输入输出的函数(API)
+在C语言标准库中定义的一组用于输入输出的函数(API)
 
 ### 特点
-```c
-    1.有缓冲机制,通过缓冲机制减少系统调用的次数，提高效率
-    2.围绕文件流进行操作，流用**FILE***描述，FILE表示结构体，包含文件的信息
-    3.默认打开了三个流：stdin(标准输入)、stdout(标准输出)、stderr(标准错误)
-    4.只能操作普通文件
-```
+1.有缓冲机制,通过缓冲机制减少系统调用的次数，提高效率
+2.围绕文件流进行操作，流用**FILE***描述，FILE表示结构体，包含文件的信息
+3.默认打开了三个流：stdin(标准输入)、stdout(标准输出)、stderr(标准错误)
+4.只能操作普通文件
 
 
 ![调用](img/2023-06-29-20-10-24.png.png)
 
 **vi -t FILE 追数据类型、宏定义的源码**
+
 ![](img/2023-06-30-20-11-05.png.png)
 **CTRL+]:向下追源码 CTRL+T回退 q退出**
+
 ![](img/2023-06-30-20-09-46.png.png)
 
 ### 缓存区
-```c
-    全缓存：和文件相关
-        刷新缓存的条件:
-            程序正常结束
-            缓存区满刷新
-            fflush强制刷新
-    行缓存：和终端相关
-        刷新缓存的条件:
-            \n刷新
-            程序正常结束
-            缓存区满刷新
-            fflush强制刷新
-    不缓存：没有缓存区，标准错误(stderr)
-```
+全缓存：和文件相关
+刷新缓存的条件:
+程序正常结束
+缓存区满刷新
+fflush强制刷新
+
+行缓存：和终端相关
+刷新缓存的条件:
+\n刷新
+程序正常结束
+缓存区满刷新
+fflush强制刷新
+
+不缓存：没有缓存区，标准错误(stderr)
+
 **小练习：计算缓存区大小**
 >```c
 >#include <stdio.h>
@@ -60,7 +61,7 @@
 ### 函数接口
 #### 打开文件 fopen
 ```c
-   FILE *fopen(const char *path, const char *mode)
+FILE *fopen(const char *path, const char *mode)
    功能：打开文件
    参数：
         path：打开的文件
@@ -78,7 +79,7 @@
 ```
 #### 打印详细错误信息
 ```c
-    void perror(const char *s);
+void perror(const char *s);
     功能：根据errno值打印对应的错误信息
     参数：
         s:提示语句
@@ -113,13 +114,13 @@ int main(int argc,char const *argv[])
 #### 读写操作 fgetc fputc (字串单个读写)
 
 ```c
-   int  fgetc(FILE * stream)
+int  fgetc(FILE * stream)
    功能：从文件中读取一个字符
    参数：stream：文件流
    返回值：成功：读到的字符
         失败或读到文件末尾：EOF(-1)
 
-   int fputc(int c, FILE * stream)
+int fputc(int c, FILE * stream)
    功能：向文件中写入一个字符
    参数：c：要写的字符
         stream：文件流
@@ -129,7 +130,7 @@ int main(int argc,char const *argv[])
 ```
 #### 出错检测(权限不够时)
 ```c
-    int ferror(FILE * stream);
+int ferror(FILE * stream);
     功能:检测文件有没有出错
     返回：文件出错，返回非零值
 ```
@@ -174,9 +175,8 @@ int main(int argc,char const *argv[])
 
 ```
 #### 字符串读写 fgets fputs
-
 ```c
-    char * fgets(char *s,  int size,  FILE * stream);
+char * fgets(char *s,  int size,  FILE * stream);
     功能：从文件中每次读取一行字符串
     参数：s：存放字符串的地址
         size：一次读取的字符个数
@@ -188,13 +188,12 @@ int main(int argc,char const *argv[])
           3.防止越界问题
           gets 会一直取，有多少取多少
 
-    int  fputs(const char *s,  FILE *stream);
+int  fputs(const char *s,  FILE *stream);
     功能：向文件中写字符串
     参数：s：要写的内容
         stream：文件流
     返回值：成功：非负整数
        失败：EOF
-
 ```
 **练习：通过fgets实现"wc -l 文件名"命令功能（计算文件行数）**
 ```c
@@ -364,14 +363,14 @@ int main(int argc,char *argv[])
 ```
 ## 文件IO
 ### 概念
->在系统中定义的一组用于输入输出的函数
+在系统中定义的一组用于输入输出的函数
 ### 特点
-```c
+
 1. 没有缓冲机制，每次IO操作都会引起系统调用
 2. 围绕文件描述符进行操作，文件描述符是非负整数，从0开始依次分配
 3. 默认打开了三个文件描述符：0(标准输入)、1(标准输出)、2(标准错误)
 4. 可以操作除d以外任意类型的文件
-```
+
 ### 函数接口
 #### 打开文件open
 ```c
@@ -684,7 +683,8 @@ int main(int argc,char *argv[])
 }
 ```
 ### 目录操作
->围绕目录流进行操作，目录流用DIR *
+围绕目录流进行操作，目录流用DIR *
+
 ```c
 DIR *opendir(const char *name);
 功能：获得目录流
@@ -736,13 +736,12 @@ int main(int argc, char const *argv[])
 
 # 库
 ## 概念
->当使用别人的函数时除了包含头文件以外还要有库
+当使用别人的函数时除了包含头文件以外还要有库
 库：就是把一些常用函数的目标文件打包在一起，提供相应函数的接口，便于程序员使用；本质上来说库是一种可执行代码的二进制形式
 由于windows和linux的本质不同，因此二者库的二进制是不兼容的
 ## 库的分类
->静态库和动态库，本质区别是代码被载入时刻不同。
+静态库和动态库，本质区别是代码被载入时刻不同。
 ## 优缺点
-```c
 1） 静态库在程序编译时会被连接到目标代码中。
 优点：程序运行时将不再需要该静态库；运行时无需加载库，运行速度更快
 缺点：静态库中的代码复制到了程序中，因此体积较大；
@@ -752,10 +751,10 @@ int main(int argc, char const *argv[])
 程序升级更简单；
 不同应用程序如果调用相同的库，那么在内存里只需要有一份该共享库的实例。
 缺点：运行时还需要动态库的存在，移植性较差
-```
+
 ## 库的制作
 ### 静态库的制作
->1-将源文件编译生成目标文件
+1-将源文件编译生成目标文件
 gcc -c add.c -o add.o
 2-创建静态库用ar命令，它将很多.o转换成.a
 ar crs libmyadd.a add.o 
@@ -765,8 +764,9 @@ gcc main.c -L. -lmyadd // -L指定库的路径 -l指定库名
 执行./a.out
 
 ![](img/static.png)
+
 ### 动态库的制作
->1.创建共享库
+1.创建共享库
 gcc -fPIC -c xxx.c -o xxx.o
 gcc -shared -o libxxx.so xxx.o
 2.测试动态库的使用
@@ -786,7 +786,7 @@ sudo vi xx.conf
 /home/hq/teach/22092/day3/dynamic
 
 ### 补充
->头文件：放在系统目录下或当前目录
+头文件：放在系统目录下或当前目录
 	放在当前目录：#include "xx.h"，从当前路径下查找文件，如果没有再从系统目录下查找
 	放在系统目录：#include <xx.h>，从系统路径下查找
 	系统路径：/usr/include
@@ -801,7 +801,7 @@ gcc 编译时需要添加选项
 # 进程
 ## 进程
 ### 程序和进程区别
->程序：编译好的可执行文件
+程序：编译好的可执行文件
 存放在磁盘上的指令和数据的有序集合（文件）
 程序是静态的，没有任何执行的概念
 进程：一个独立的可调度的任务   程序的执行过程 
@@ -810,22 +810,22 @@ gcc 编译时需要添加选项
 进程是动态的，包括创建、调度、执行和消亡
 
 ### 特点
->1） 系统会为每个进程分配0-4g的虚拟空间，0-3g是用户空间，每个进程独有，3g-4g是内核空间，所有进程共享
+1） 系统会为每个进程分配0-4g的虚拟空间，0-3g是用户空间，每个进程独有，3g-4g是内核空间，所有进程共享
 2）系统为每个进程分配时间片(几毫秒~几十毫秒),当一个进程时间片用完时，CPU调度另一个进程，从而实现进程调度的切换
 
 ### 进程段
->Linux中的进程包含三个段：
+Linux中的进程包含三个段：
 “数据段”存放的是全局变量、常数以及动态数据分配的数据空间(如malloc函数取得的空间)等。
 “正文段”存放的是程序中的代码
 “堆栈段”存放的是函数的返回地址、函数的参数以及程序中的局部变量 
 
 ### 进程分类
->交互进程：该类进程是由shell控制和运行的。交互进程既可以在前台运行，也可以在后台运行。该类进程经常与用户进行交互，需要等待用户的输入，当接收到用户的输入后，该类进程会立刻响应，典型的交互式进程有：shell命令进程、文本编辑器等
+交互进程：该类进程是由shell控制和运行的。交互进程既可以在前台运行，也可以在后台运行。该类进程经常与用户进行交互，需要等待用户的输入，当接收到用户的输入后，该类进程会立刻响应，典型的交互式进程有：shell命令进程、文本编辑器等
 批处理进程：该类进程不属于某个终端，它被提交到一个队列中以便顺序执行。
 守护进程：该类进程在后台运行。它一般在Linux启动时开始执行，系统关闭时才结束。
 
 ### 进程状态
->1）运行态（TASK_RUNNING）：R
+1）运行态（TASK_RUNNING）：R
 指正在被CPU运行或者就绪的状态。这样的进程被成为runnning进程。
 2）睡眠态(等待态)：
 可中断睡眠态（TASK_INTERRUPTIBLE）S：处于等待状态中的进程，一旦被该进程等待的资源被释放，那么该进程就会进入运行状态。
@@ -841,12 +841,12 @@ l 多线程
 +前台进程 
 
 ### 进程状态切换图
->进程创建后，进程进入就绪态，当CPU调度到此进程时进入运行态，当时间片用完时，此进程会进入就绪态，如果此进程正在执行一些IO操作(阻塞操作)会进入阻塞态，完成IO操作（阻塞结束）后又可进入就绪态，等待CPU的调度，当进程运行结束即进入结束态
+进程创建后，进程进入就绪态，当CPU调度到此进程时进入运行态，当时间片用完时，此进程会进入就绪态，如果此进程正在执行一些IO操作(阻塞操作)会进入阻塞态，完成IO操作（阻塞结束）后又可进入就绪态，等待CPU的调度，当进程运行结束即进入结束态
 
 ![](img/pid_t.png)
 
 ### 进程操作命令
->ps ：
+ps ：
 	ps aux:查看系统中正在运行进程
 	ps -ef：查看系统中的父进程号
 top：动态查看系统中正在运行的进程
@@ -865,13 +865,13 @@ pid_t fork(void);
     失败：-1并设置errno
 ```
 **特点**
->1）子进程几乎拷贝了父进程的全部内容。包括代码、数据、系统数据段中的pc值、栈中的数据、父进程中打开的文件等；但它们的PID、PPID是不同的。
+1）子进程几乎拷贝了父进程的全部内容。包括代码、数据、系统数据段中的pc值、栈中的数据、父进程中打开的文件等；但它们的PID、PPID是不同的。
 2）父子进程有独立的地址空间，互不影响；当在相应的进程中改变全局变量、静态变量，都互不影响。
 3）若父进程先结束，子进程成为孤儿进程，被init进程收养，子进程变成后台进程。
 4）若子进程先结束，父进程如果没有及时回收，子进程变成僵尸进程（要避免僵尸进程产生）
 
 **总结**
->1.fork之前的代码会被复制，但是不会被执行，fork之后的代码会被复制并执行
+1.fork之前的代码会被复制，但是不会被执行，fork之后的代码会被复制并执行
    2.fork之前打开的文件，fork之后父子进程拿到是同一个文件描述符，操作的是同一个文件指针
    3.一旦fork之后父子进程独立
 
@@ -913,7 +913,7 @@ void _exit(int status);
 ![](img/exit.png)
 
 **exit和return区别**
->exit：不管在子函数还是主函数，都可以结束进程
+exit：不管在子函数还是主函数，都可以结束进程
 return：当子函数中有return时返回到函数调用位置，并不结束进程
 
 #### 获取进程号 getpid getppid
@@ -1049,9 +1049,9 @@ int main(int argc, char const *argv[])
 ```
 ## 守护进程
 ### 特点
->守护进程是后台进程；生命周期比较长，从系统启动时开启，系统关闭时结束；它是脱离控制终端且周期执行的进程。
+守护进程是后台进程；生命周期比较长，从系统启动时开启，系统关闭时结束；它是脱离控制终端且周期执行的进程。
 ### 步骤
->1） 创建子进程，父进程退出
+1） 创建子进程，父进程退出
 让子进程变成孤儿进程，成为后台进程；fork()
 2） 在子进程中创建新会话
 让子进程成为会话组组长，为了让子进程完全脱离终端；setsid()
@@ -1141,12 +1141,12 @@ int main(int argc, char const *argv[])
 ```
 # 线程:实现多任务编程
 ## 概念
->是一个轻量级的进程，为了提高系统的性能引入线程
+是一个轻量级的进程，为了提高系统的性能引入线程
      	     Linux里同样用task_struct来描述一个线程。
            线程和进程都参与统一的调度。
            在同一个进程中创建的线程共享该进程的地址空间
 ## 进程与线程的区别
->共性：都为操作系统提供了并发执行能力
+共性：都为操作系统提供了并发执行能力
 不同点：
 调度和资源：线程是系统调度的最小单位，进程是资源分配的最小单位
 地址空间方面：同一个进程创建的多个线程共享进程的资源；进程的地址空间相互独立
@@ -1154,7 +1154,7 @@ int main(int argc, char const *argv[])
 安全性方面：线程安全性差一些，当进程结束时会导致所有线程退出；进程相对安全
 
 ## 线程资源
->共享的资源：可执行的指令、静态数据、进程中打开的文件描述符、信号处理函数、当前工作目录、用户ID、用户组ID
+共享的资源：可执行的指令、静态数据、进程中打开的文件描述符、信号处理函数、当前工作目录、用户ID、用户组ID
 私有的资源：线程ID (TID)、PC(程序计数器)和相关寄存器、堆栈、错误号 (errno)、信号掩码和优先级、执行状态和属性
 
 ## 函数接口
@@ -1239,7 +1239,7 @@ int main(int argc, char const *argv[])
 ```
 
 **补充：关于pthread_create的参数问题——函数指针**
->定义：本质是指针，指向函数的
+定义：本质是指针，指向函数的
    格式：数据类型 (*指针变量名)(参数列表) = 函数名；
 	int (*p)(int a, int b) = add;
 	int add(int a, int b)
@@ -1289,16 +1289,16 @@ int main(int argc, char const *argv[])
 ```
 ## 线程同步
 ### 概念
->同步(synchronization)指的是多个任务(线程)按照约定的顺序相互配合完成一件事情
+同步(synchronization)指的是多个任务(线程)按照约定的顺序相互配合完成一件事情
 
 ### 同步机制
->通过信号量实现线程间同步。
+通过信号量实现线程间同步。
 信号量：由信号量来决定线程是继续运行还是阻塞等待，信号量代表某一类资源，其值表示系统中该资源的数量
 信号量是一个受保护的变量，只能通过三种操作来访问：初始化、Ｐ操作(申请资源)、Ｖ操作(释放资源)
 信号量的值为非负整数
 
 ### 特性
->P操作：
+P操作：
 当信号量的值大于0时，可以申请到资源，申请资源后信号量的值减1
 当信号量的值等于0时，申请不到资源，函数阻塞
 V操作：
@@ -1443,7 +1443,7 @@ int main(int argc,char const *argv[])
 ```
 ## 线程互斥
 ### 概念
->临界资源：一次仅允许一个进程所使用的资源
+临界资源：一次仅允许一个进程所使用的资源
 临界区：指的是一个访问共享资源的程序片段
 互斥：多个线程在访问临界资源时，同一时间只能一个线程访问
 互斥锁：通过互斥锁可以实现互斥机制，主要用来保护临界资源，每个临界资源都由一个互斥锁来保护，线程必须先获得互斥锁才能访问临界资源，访问完资源后释放该锁。如果无法获得锁，线程会阻塞直到获得锁为止。
@@ -1537,9 +1537,9 @@ int main(int argc, char const *argv[])
 
 ## 死锁
 ### 概念
->是指两个或两个以上的进程/线程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去
+是指两个或两个以上的进程/线程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去
 ###死锁产生的四个必要条件
->1、互斥使用，即当资源被一个线程使用(占有)时，别的线程不能使用
+1、互斥使用，即当资源被一个线程使用(占有)时，别的线程不能使用
 2、不可抢占，资源请求者不能强制从资源占有者手中夺取资源，资源只能由资源占有者主动释放。
 3、请求和保持，即当资源请求者在请求其他的资源的同时保持对原有资源的占有。
 4、循环等待，即存在一个等待队列：P1占有P2的资源，P2占有P3的资源，P3占有P1的资源。这样就形成了一个等待环路。
@@ -1547,7 +1547,7 @@ int main(int argc, char const *argv[])
 
 ## 条件变量
 ### 意义
->和互斥锁搭配，实现同步机制
+和互斥锁搭配，实现同步机制
 ###函数接口
 ```c
 int pthread_cond_init(pthread_cond_t *restrict cond,const pthread_condattr_t *restrict attr);
@@ -1577,7 +1577,7 @@ int pthread_cond_broadcast(pthread_cond_t *cond);
 
 ```
 ### 步骤
->pthread_cond_init:初始化
+pthread_cond_init:初始化
 pthread_cond_wait：阻塞等待条件产生，没有条件产生时阻塞，同时解锁，当条件产生时结束阻塞，再次上锁
 	pthread_mutex_lock(); //上锁
 	pthread_cond_wait(cond, lock); //如果没有条件产生时，解锁，当等待到条件产生时，上锁
@@ -1719,7 +1719,7 @@ int main(int argc, char const *argv[])
 
 # 进程间通信
 ## 进程间通信方式
->传统进程间通信：
+传统进程间通信：
 	无名管道(pipe)、有名管道(fifo)、信号(sem)
 system v IPC(InterPrecess Communication)对象：
 	共享内存(share memory)、信号灯集(message queue)、消息队列(semaphore)
@@ -1728,7 +1728,7 @@ BSD：
 
 ## 无名管道
 ### 特点
->a. 只能用于具有亲缘关系的进程之间的通信
+a. 只能用于具有亲缘关系的进程之间的通信
 b. 半双工的通信模式，具有固定的读端和写端
 c. 管道可以看成是一种特殊的文件，对于它的读写可以使用文件IO如read、write函数.
 d. 管道是基于文件描述符的通信方式。当一个管道建立时，它会创建两个文件描述符
@@ -1797,9 +1797,466 @@ int main(int argc,char const *argv[])
 }
 ```
 ### 注意事项
->a.  当管道中无数据时，读操作会阻塞；
+a.  当管道中无数据时，读操作会阻塞；
 管道中无数据，将写端关闭，读操作会立即返回
 b. 管道中装满（管道大小64K）数据写阻塞，一旦有4k空间，写继续
 c. 只有在管道的读端存在时，向管道中写入数据才有意义。否则，会导致管道破裂，向管道中写入数据的进程将收到内核传来的SIGPIPE信号 (通常Broken pipe错误)。
 
 ## 有名管道
+### 特点
+a. 有名管道可以使互不相关的两个进程互相通信。
+b. 有名管道可以通过路径名来指出，并且在文件系统中可见，但内容存放在内存中。
+c. 进程通过文件IO来操作有名管道
+d. 有名管道遵循先进先出规则
+e. 不支持如lseek() 操作
+
+### 函数接口
+```c
+int mkfifo(const char *filename,mode_t mode);
+功能：创健有名管道
+参数：filename：有名管道文件名
+       mode：权限
+返回值：成功：0
+       失败：-1，并设置errno号
+注意对错误的处理方式：
+如果错误是file exist时，注意加判断，如：if(errno == EEXIST)
+```
+### 有名管道操作流程
+创建有名管道、打开管道、读写管道、关闭管道
+
+**实现**
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <unistd.h>
+#include <fcntl.h>
+
+int main(int argc, char const *argv[])
+{
+    char buf[32]="";
+    //创建有名管道
+    if(mkfifo("./aa",0666)<0)
+    {
+        //当有名管道存在时，单独处理，只打印提示信息即可
+        if(errno == EEXIST)
+        {
+            printf("FILE EXISTS\n");
+        }
+        else 
+        {   perror("mkfifo err\n");
+            return -1;
+        }
+    }
+    printf("mkfifo ok\n");      //往管道里写数据是写到内核空间的
+    int fd=open("aa.c",O_RDWR); //写到管道里，读也从管道里读，而不是写在文件里
+    write(fd,"HELLO",5);
+    //read(fd,buf,32);
+    printf("buf:%s\n",buf);
+
+    return 0;
+}
+```
+**注：函数只是在路径下创建管道文件，往管道中写的数据依然写在内核空间。**
+
+### 注意事项
+a. 只写方式，写阻塞，一直到另一个进程把读打开
+b. 只读方式，读阻塞，一直到另一个进程把写打开
+c. 可读可写，如果管道中没有数据，读阻塞；
+
+**练习**
+
+通过有名管道实现文件复制(cp)功能。
+写两个程序，分别生成r 和w 进程
+
+![](img/src/new.png)
+
+**思路**
+读源文件，写到管道里
+1.创建管道
+2.打开源文件，管道文件
+3.循环读源文件，写管道
+4.关闭文件描述符
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(int argc,char const *argv[])
+{
+    if(mkfifo("./fifl",0666)<0)
+    {
+        if(errno == EEXIST)
+            printf("file exist");
+        else
+        {
+            perror("fifo err");
+            return -1;
+        }
+    }
+    printf("fifo ok\n");
+    int fd = open("./fifl",O_WRONLY);
+    if(fd<0)
+    {
+        perror("open err");
+        return -1;
+    }
+    int fdd = open(argv[1],O_RDONLY);
+    if(fdd<0)
+    {
+        perror("open fdd err");
+        return -1;
+    }
+    int num =0;
+    char buf[32];
+    while((num=read(fdd,buf,32)) !=0)
+    {
+        write(fd,buf,num);
+    }
+    close(fd);
+    close(fdd);
+    return 0;
+}
+```
+**思路**
+
+读管道，写到目标文件里面
+1.创建管道
+2.打开目标文件，管道文件
+3.循环读管道文件，写目标文件
+4.关闭文件描述符
+
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(int argc, char const *argv[])
+{
+    if (mkfifo("./fifl", 0666) < 0)
+    {
+        if (errno == EEXIST)
+            printf("file exist");
+        else
+        {
+            perror("fifo err");
+            return -1;
+        }
+    }
+    printf("fifo ok\n");
+    int fd = open("./fifl", O_RDONLY);
+    if (fd < 0)
+    {
+        perror("open err");
+        return -1;
+    }
+    int fdd = open(argv[1], O_WRONLY|O_CREAT|O_TRUNC,0666);
+    if (fdd < 0)
+    {
+        perror("open fdd err");
+        return -1;
+    }
+    int num = 0;
+    char buf[32];
+    while ((num = read(fd, buf, 32)) != 0)
+    {
+        write(fdd, buf, num);
+    }
+    close(fd);
+    close(fdd);
+    return 0;
+}
+```
+
+### 有名管道与无名管道
+
+![](img/pipe_fifo.png)
+
+## 信号
+### 回顾
+kill -l 显示系统中的信号
+kill -num PID：给PID进程发送num信号
+
+### 概念
+1）信号是在软件层次上对中断机制的一种模拟，是一种异步通信方式
+2）信号可以直接进行用户空间进程和内核进程之间的交互，内核进程也可以利用它来通知用户空间进程发生了哪些系统事件。
+3）如果该进程当前并未处于执行态，则该信号就由内核保存起来，直到该进程恢复执行再传递给它；如果一个信号被进程设置为阻塞，则该信号的传递被延迟，直到其阻塞被取消时才被传递给进程 
+
+### 响应方式
+1）忽略信号：对信号不做任何处理，但是有两个信号不能忽略：即SIGKILL及SIGSTOP。
+2）捕捉信号：定义信号处理函数，当信号发生时，执行相应的处理函数。
+3）执行缺省操作：Linux对每种信号都规定了默认操作 
+
+### 信号的种类
+
+2）SIGINT：结束进程，对应快捷方式ctrl+c 	 <font color=Red>程序终止信号，用于通知前台进程组终止进程</font>
+3）SIGQUIT：退出信号，对应快捷方式ctrl+\
+9）SIGKILL：结束进程，不能被忽略不能被捕捉         
+<font color=Red>SIGKILL提供给管理员杀死进程的权利, SIGSTOP提给管理员暂停进程的权利</font>
+15）SIGTERM：结束终端进程，kill 使用时不加数字默认是此信号	
+<font color=Red>程序结束(terminate)信号, 与SIGKILL不同的是该信号可以被阻塞和处理。通常用来要求程序自己正常退出，shell命令kill缺省产生这个信号。如果进程终止不了，我们才会尝试SIGKILL。</font>
+17）SIGCHLD：子进程状态改变时给父进程发的信号
+19）SIGSTOP：结束进程，不能被忽略不能被捕捉	
+<font color=Red>停止(stopped)进程的执行，注意它和terminate以及interrupt的区别:该进程还未结束, 只是暂停执行. 本信号不能被阻塞, 处理或忽略</font>
+20）SIGTSTP：暂停信号，对应快捷方式ctrl+z
+26）SIGALRM：闹钟信号，alarm函数设置定时，当到设定的时间时，内核会向进程发送此信号结束进程。
+
+### 函数接口
+```c
+int kill(pid_t pid, int sig);//宏定义的那些
+功能：信号发送
+参数：pid：指定进程
+   sig：要发送的信号
+返回值：成功 0     
+    失败 -1
+int raise(int sig);//宏定义的那些
+功能：进程向自己发送信号
+参数：sig：信号
+返回值：成功 0   
+    失败 -1
+int pause(void);
+功能：用于将调用进程挂起，直到收到信号为止。
+unsigned int alarm(unsigned int seconds)
+功能：在进程中设置一个定时器
+参数：seconds：定时时间，单位为秒
+返回值：如果调用此alarm()前，进程中已经设置了闹钟时间，则
+返回上一个闹钟时间的剩余时间，否则返回0。
+注意：一个进程只能有一个闹钟时间。如果在调用alarm时,已设置过闹钟时间，则之前的闹钟时间被新值所代替
+
+typedef void (*sighandler_t)(int);
+sighandler_t signal(int signum, sighandler_t handler);
+功能：信号处理函数
+参数：signum：要处理的信号
+      handler：信号处理方式
+            SIG_IGN：忽略信号
+            SIG_DFL：执行默认操作
+           handler：捕捉信号  void handler(int sig){} //函数名可以自定义
+返回值：成功：设置之前的信号处理方式
+      失败：-1
+```
+
+**实现**
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <signal.h>
+#include <unistd.h>
+void handler(int sig)
+{
+    printf("sig:%d\n",sig);
+    if(sig ==  2)
+    printf("heelo word\n");
+    else
+    {
+        printf("hello hi\n");
+    }
+}
+int main(int argc, char const *argv[])
+{
+    
+    printf("hello word\n");
+    kill(getpid(),SIGQUIT);//发送信号
+
+    //1.忽略操作
+    signal(SIGINT,SIG_IGN);
+    //2.缺省操作（默认操作）
+    signal(SIGINT,SIG_DFL);
+    //3.捕捉操作
+    signal(SIGTSTP,handler);//传个函数handler
+    pause();
+    return 0;
+}
+```
+**alarm实现**
+```c
+#include <stdio.h>
+#include <unistd.h>
+int main(int argc, char const *argv[])
+{
+    //第一次调用alarm返回0
+    //下一次调用返回上一次调用剩下的时间
+    printf("%d\n",alarm(2));//异步 0
+    printf("hello\n");
+    sleep(1);
+    printf("%d\n",alarm(1));//以最后一次定时时间为准 2-1
+
+    //raise(9);
+    //while(1);
+    alarm(5);//设置一个定时器，参数是秒
+    sleep(1);
+    pause();//将程序挂起，直到收到信号为止 -->while(1);
+    return 0；
+}
+```
+
+**补充——signal参数问题**
+
+![](img/signal.png)
+
+<font color=Red>指针函数和函数指针区分：看\*到底修饰那个 void \*函数（参数）指针函数  void（\*函数)(参数）函数指针
+typedef void(\*)(int)  	sighandler_t 重定义一个函数指针 
+不过C语言并不支持这种格式 =》 sighandler_t + 函数
+void (*)（int）sighandler 定义一个函数指针 不过C语言不支持=》 void （*sighandler）（int）</font>
+
+**练习**
+
+用信号的知识实现司机和售票员问题。
+1）售票员捕捉SIGINT（代表开车）信号，向司机发送SIGUSR1信号，司机打印（let's gogogo）
+2）售票员捕捉SIGQUIT（代表停车）信号，向司机发送SIGUSR2信号，司机打印（stop the bus）kill（pid，）
+3）司机捕捉SIGTSTP（代表到达终点站）信号，向售票员发送SIGUSR1信号，售票员打印（please get off the bus）
+4）司机等待售票员下车，之后司机再下车。fork（）wait（）
+
+**思路**
+
+父子进程
+司机：父进程
+	捕捉信号：SIGUSR1  SIGUSR2  SIGTSTP
+	忽略信号：SIGINT  SIGQUIT
+售票员：子进程
+	捕捉信号：SIGINT  SIGQUIT  SIGUSR1
+	忽略信号：SIGTSTP  
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <errno.h>
+#include <signal.h>
+#include <sys/wait.h>
+
+pid_t pid;
+void Ticket_Seller(int sig)
+{
+    if (sig == SIGINT)
+        kill(getppid(), SIGUSR1);
+    else if (sig == SIGQUIT)
+        kill(getppid(), SIGUSR2);
+    else if (sig == SIGUSR1)
+    {
+        printf("please get off the bus\n");
+        exit(0);
+    }
+}
+void Bus_driver(int sig)
+{
+    if (sig == SIGUSR1)
+        printf("let`s go go go\n");
+    else if (sig == SIGUSR2)
+        printf("stop the bus\n");
+    else if (sig == SIGTSTP)
+    {
+        kill(pid, SIGUSR1);
+        wait(NULL);
+        exit(0);
+    }
+}
+int main(int argc, char const *argv[])
+{
+    pid = fork();
+    if (pid < 0)
+    {
+        perror("fork err");
+        return -1;
+    }
+    else if (pid == 0)
+    {
+        signal(SIGINT, Ticket_Seller);//捕获什么信号，相对应什么功能函数去处理他
+        signal(SIGQUIT, Ticket_Seller);
+        signal(SIGTSTP, SIG_IGN);;//忽略什么信号，以免产生与之相对应得的结果
+        signal(SIGUSR1, Ticket_Seller);
+    }
+    else
+    {
+        signal(SIGUSR1, Bus_driver);
+        signal(SIGINT, SIG_IGN);
+        signal(SIGQUIT, SIG_IGN);
+        signal(SIGUSR2, Bus_driver);
+        signal(SIGTSTP, Bus_driver);
+    }
+    while (1)
+        pause();
+    return 0;
+}
+```
+
+## 共享内存
+
+### 特点
+
+1）共享内存是一种<font color=Red>最为高效的进程间通信方式</font>，进程可以直接读写内存，而不需要任何数据的拷贝
+2）为了在多个进程间交换信息，内核专门留出了一块内存区，可以由需要访问的进程将其映射到自己的私有地址空间
+3）进程就可以直接读写这一内存区而不需要进行数据的拷贝，从而大大提高的效率。
+4）由于多个进程共享一段内存，因此也需要依靠某种同步机制，如互斥锁和信号量等
+
+**原理图**
+
+![](img/share.png)
+
+### 步骤
+
+创建key值ftok
+1. 创建或者打开共享内存shmget（shm： share memory）
+2. 映射共享内存到用户空间shmat
+3. 撤销映射shmdt
+4. 删除共享内存shmctl
+
+### 函数接口
+
+```c
+key_t ftok(const char *pathname, int proj_id);
+功能：产生一个独一无二的key值
+参数：
+    Pathname：已经存在的可访问文件的名字
+    Proj_id：一个字符（因为只用低8位）
+返回值：成功：key值
+      失败：-1
+
+int shmget(key_t key, size_t size, int shmflg);
+功能：创建或打开共享内存
+参数：
+    key  键值
+    size   共享内存的大小
+    shmflg   IPC_CREAT|IPC_EXCL（判错）|0666
+返回值：成功   shmid
+      出错    -1
+void  *shmat(int  shmid,const  void  *shmaddr,int  shmflg);
+功能：映射共享内存，即把指定的共享内存映射到进程的地址空间用于访问
+参数：
+    shmid   共享内存的id号
+    shmaddr   一般为NULL，表示由系统自动完成映射
+              如果不为NULL，那么有用户指定
+    shmflg：SHM_RDONLY就是对该共享内存只进行读操作
+                0     可读可写
+返回值：成功：完成映射后的地址，
+      失败：-1的地址
+用法：if((p = (char *)shmat(shmid，NULL,0)) == (char *)-1)
+int shmdt(const void *shmaddr);
+功能：取消映射
+参数：要取消的地址
+返回值：成功0  
+      失败的-1   
+int  shmctl(int  shmid,int  cmd,struct  shmid_ds   *buf);
+功能：(删除共享内存)，对共享内存进行各种操作
+参数：
+    shmid   共享内存的id号
+    cmd     IPC_STAT 获得shmid属性信息，存放在第三参数
+            IPC_SET 设置shmid属性信息，要设置的属性放在第三参数
+            IPC_RMID:删除共享内存，此时第三个参数为NULL即可
+返回：成功0 
+     失败-1
+用法：shmctl(shmid,IPC_RMID,NULL);
+```
