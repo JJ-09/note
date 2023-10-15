@@ -143,6 +143,7 @@ int  feof(FILE * stream);
 返回：到达文件末尾，返回非零值
 ```
 **练习：通过fgtec fputc实现cat功能 cat文件名 ->./a.out 文件名**
+
 思路：打开文件，循环读文件(fgetc)，当读到文件末尾时(fgetc返回值是EOF)循环结束，循环中打印读到的字符，关闭文件
 ```c
 #include <stdio.h>
@@ -756,22 +757,22 @@ int main(int argc, char const *argv[])
 
 ## 库的制作
 ### 静态库的制作
-1-将源文件编译生成目标文件
+1. 将源文件编译生成目标文件
 gcc -c add.c -o add.o
-2-创建静态库用ar命令，它将很多.o转换成.a
+2. 创建静态库用ar命令，它将很多.o转换成.a
 ar crs libmyadd.a add.o 
 静态库文件名的命名规范是以lib为前缀，紧接着跟静态库名，扩展名为.a
-3-测试使用静态库：
+3. 测试使用静态库：
 gcc main.c -L. -lmyadd // -L指定库的路径 -l指定库名
 执行./a.out
 
 ![](img/static.png)
 
 ### 动态库的制作
-1.创建共享库
+1. 创建共享库
 gcc -fPIC -c xxx.c -o xxx.o
 gcc -shared -o libxxx.so xxx.o
-2.测试动态库的使用
+2. 测试动态库的使用
 编译：gcc xxx.c -L路径 -l库名
 执行：./a.out
 可以正常编译通过，但是运行时报错
@@ -812,8 +813,8 @@ gcc 编译时需要添加选项
 进程是动态的，包括创建、调度、执行和消亡
 
 ### 特点
-1） 系统会为每个进程分配0-4g的虚拟空间，0-3g是用户空间，每个进程独有，3g-4g是内核空间，所有进程共享
-2）系统为每个进程分配时间片(几毫秒~几十毫秒),当一个进程时间片用完时，CPU调度另一个进程，从而实现进程调度的切换
+1. 系统会为每个进程分配0-4g的虚拟空间，0-3g是用户空间，每个进程独有，3g-4g是内核空间，所有进程共享
+2. 系统为每个进程分配时间片(几毫秒~几十毫秒),当一个进程时间片用完时，CPU调度另一个进程，从而实现进程调度的切换
 
 ### 进程段
 Linux中的进程包含三个段：
@@ -827,15 +828,15 @@ Linux中的进程包含三个段：
 守护进程：该类进程在后台运行。它一般在Linux启动时开始执行，系统关闭时才结束。
 
 ### 进程状态
-1）运行态（TASK_RUNNING）：R
+1. 运行态（TASK_RUNNING）：R
 指正在被CPU运行或者就绪的状态。这样的进程被成为runnning进程。
-2）睡眠态(等待态)：
+2. 睡眠态(等待态)：
 可中断睡眠态（TASK_INTERRUPTIBLE）S：处于等待状态中的进程，一旦被该进程等待的资源被释放，那么该进程就会进入运行状态。
 不可中断睡眠态（TASK_UNINTERRUPTIBLE）D：该状态的进程只能用wake_up()函数唤醒。
-3）暂停态（TASK_STOPPED）:T
+3. 暂停态（TASK_STOPPED）:T
 当进程收到信号SIGSTOP、SIGTSTP、SIGTTIN或SIGTTOU时就会进入暂停状态。可向其发送SIGCONT信号让进程转换到可运行状态。
-4）死亡态：进程结束 X
-5）僵尸态：Z 当进程已经终止运行，但还占用系统资源，要避免僵尸态的产生
+4. 死亡态：进程结束 X
+5. 僵尸态：Z 当进程已经终止运行，但还占用系统资源，要避免僵尸态的产生
 < 高优先级
 N 低优先级
 s 会话组组长
@@ -867,15 +868,15 @@ pid_t fork(void);
     失败：-1并设置errno
 ```
 **特点**
-1）子进程几乎拷贝了父进程的全部内容。包括代码、数据、系统数据段中的pc值、栈中的数据、父进程中打开的文件等；但它们的PID、PPID是不同的。
-2）父子进程有独立的地址空间，互不影响；当在相应的进程中改变全局变量、静态变量，都互不影响。
-3）若父进程先结束，子进程成为孤儿进程，被init进程收养，子进程变成后台进程。
-4）若子进程先结束，父进程如果没有及时回收，子进程变成僵尸进程（要避免僵尸进程产生）
+1. 子进程几乎拷贝了父进程的全部内容。包括代码、数据、系统数据段中的pc值、栈中的数据、父进程中打开的文件等；但它们的PID、PPID是不同的。
+2. 父子进程有独立的地址空间，互不影响；当在相应的进程中改变全局变量、静态变量，都互不影响。
+3. 若父进程先结束，子进程成为孤儿进程，被init进程收养，子进程变成后台进程。
+4. 若子进程先结束，父进程如果没有及时回收，子进程变成僵尸进程（要避免僵尸进程产生）
 
 **总结**
-1.fork之前的代码会被复制，但是不会被执行，fork之后的代码会被复制并执行
-   2.fork之前打开的文件，fork之后父子进程拿到是同一个文件描述符，操作的是同一个文件指针
-   3.一旦fork之后父子进程独立
+1. fork之前的代码会被复制，但是不会被执行，fork之后的代码会被复制并执行
+2. fork之前打开的文件，fork之后父子进程拿到是同一个文件描述符，操作的是同一个文件指针
+3. 一旦fork之后父子进程独立
 
 #### 回收进程 wait waitpid
 ```c
@@ -1053,15 +1054,15 @@ int main(int argc, char const *argv[])
 ### 特点
 守护进程是后台进程；生命周期比较长，从系统启动时开启，系统关闭时结束；它是脱离控制终端且周期执行的进程。
 ### 步骤
-1） 创建子进程，父进程退出
+1. 创建子进程，父进程退出
 让子进程变成孤儿进程，成为后台进程；fork()
-2） 在子进程中创建新会话
+2. 在子进程中创建新会话
 让子进程成为会话组组长，为了让子进程完全脱离终端；setsid()
-3） 改变进程运行路径为根目录
+3. 改变进程运行路径为根目录
 原因进程运行的路径不能被删除或卸载；chdir("/")
-4） 重设文件权限掩码
+4. 重设文件权限掩码
 目的：增大进程创建文件时权限，提高灵活性；umask(0)
-5） 关闭文件描述符
+5. 关闭文件描述符
 将不需要的文件关闭；close()
 
 **实现**
@@ -1541,10 +1542,10 @@ int main(int argc, char const *argv[])
 ### 概念
 是指两个或两个以上的进程/线程在执行过程中，由于竞争资源或者由于彼此通信而造成的一种阻塞的现象，若无外力作用，它们都将无法推进下去
 ###死锁产生的四个必要条件
-1、互斥使用，即当资源被一个线程使用(占有)时，别的线程不能使用
-2、不可抢占，资源请求者不能强制从资源占有者手中夺取资源，资源只能由资源占有者主动释放。
-3、请求和保持，即当资源请求者在请求其他的资源的同时保持对原有资源的占有。
-4、循环等待，即存在一个等待队列：P1占有P2的资源，P2占有P3的资源，P3占有P1的资源。这样就形成了一个等待环路。
+1. 互斥使用，即当资源被一个线程使用(占有)时，别的线程不能使用
+2. 不可抢占，资源请求者不能强制从资源占有者手中夺取资源，资源只能由资源占有者主动释放。
+3. 请求和保持，即当资源请求者在请求其他的资源的同时保持对原有资源的占有。
+4. 循环等待，即存在一个等待队列：P1占有P2的资源，P2占有P3的资源，P3占有P1的资源。这样就形成了一个等待环路。
 注意：当上述四个条件都成立的时候，便形成死锁。当然，死锁的情况下如果打破上述任何一个条件，便可让死锁消失。
 
 ## 条件变量
@@ -1579,12 +1580,12 @@ int pthread_cond_broadcast(pthread_cond_t *cond);
 
 ```
 ### 步骤
-pthread_cond_init:初始化
-pthread_cond_wait：阻塞等待条件产生，没有条件产生时阻塞，同时解锁，当条件产生时结束阻塞，再次上锁
-	pthread_mutex_lock(); //上锁
-	pthread_cond_wait(cond, lock); //如果没有条件产生时，解锁，当等待到条件产生时，上锁
-pthread_cond_signal：产生条件，不阻塞
-pthread_cond_wait先执行，pthread_cond_signal再产生条件
+1. pthread_cond_init:初始化
+2. pthread_cond_wait：阻塞等待条件产生，没有条件产生时阻塞，同时解锁，当条件产生时结束阻塞，再次上锁
+3. pthread_mutex_lock(); //上锁
+4. pthread_cond_wait(cond, lock); //如果没有条件产生时，解锁，当等待到条件产生时，上锁
+5. pthread_cond_signal：产生条件，不阻塞
+6. pthread_cond_wait先执行，pthread_cond_signal再产生条件
 
 **实现**
 ```c
@@ -1730,11 +1731,10 @@ BSD：
 
 ## 无名管道
 ### 特点
-a. 只能用于具有亲缘关系的进程之间的通信
-b. 半双工的通信模式，具有固定的读端和写端
-c. 管道可以看成是一种特殊的文件，对于它的读写可以使用文件IO如read、write函数.
-d. 管道是基于文件描述符的通信方式。当一个管道建立时，它会创建两个文件描述符
-fd[0]和fd[1]。其中fd[0]固定用于读管道，而fd[1]固定用于写管道。
+1. 只能用于具有亲缘关系的进程之间的通信
+2. 半双工的通信模式，具有固定的读端和写端
+3. 管道可以看成是一种特殊的文件，对于它的读写可以使用文件IO如read、write函数.
+4. 管道是基于文件描述符的通信方式。当一个管道建立时，它会创建两个文件描述符fd[0]和fd[1]。其中fd[0]固定用于读管道，而fd[1]固定用于写管道。
 
 **(单工：只能单方面传输信息，（广播、电视）;半双工：可以双向传输信息，但是同一时刻只能一个方向传输信息（对讲机）;全双工：可以双向同时传输信息（电话）)**
 
@@ -1799,18 +1799,18 @@ int main(int argc,char const *argv[])
 }
 ```
 ### 注意事项
-a.  当管道中无数据时，读操作会阻塞；
+1.  当管道中无数据时，读操作会阻塞；
 管道中无数据，将写端关闭，读操作会立即返回
-b. 管道中装满（管道大小64K）数据写阻塞，一旦有4k空间，写继续
-c. 只有在管道的读端存在时，向管道中写入数据才有意义。否则，会导致管道破裂，向管道中写入数据的进程将收到内核传来的SIGPIPE信号 (通常Broken pipe错误)。
+2. 管道中装满（管道大小64K）数据写阻塞，一旦有4k空间，写继续
+3. 只有在管道的读端存在时，向管道中写入数据才有意义。否则，会导致管道破裂，向管道中写入数据的进程将收到内核传来的SIGPIPE信号 (通常Broken pipe错误)。
 
 ## 有名管道
 ### 特点
-a. 有名管道可以使互不相关的两个进程互相通信。
-b. 有名管道可以通过路径名来指出，并且在文件系统中可见，但内容存放在内存中。
-c. 进程通过文件IO来操作有名管道
-d. 有名管道遵循先进先出规则
-e. 不支持如lseek() 操作
+1. 有名管道可以使互不相关的两个进程互相通信。
+2. 有名管道可以通过路径名来指出，并且在文件系统中可见，但内容存放在内存中。
+3. 进程通过文件IO来操作有名管道
+4. 有名管道遵循先进先出规则
+5. 不支持如lseek() 操作
 
 ### 函数接口
 ```c
@@ -1863,9 +1863,9 @@ int main(int argc, char const *argv[])
 **注：函数只是在路径下创建管道文件，往管道中写的数据依然写在内核空间。**
 
 ### 注意事项
-a. 只写方式，写阻塞，一直到另一个进程把读打开
-b. 只读方式，读阻塞，一直到另一个进程把写打开
-c. 可读可写，如果管道中没有数据，读阻塞；
+1. 只写方式，写阻塞，一直到另一个进程把读打开
+2. 只读方式，读阻塞，一直到另一个进程把写打开
+3. 可读可写，如果管道中没有数据，读阻塞；
 
 **练习**
 
@@ -1876,10 +1876,10 @@ c. 可读可写，如果管道中没有数据，读阻塞；
 
 **思路**
 读源文件，写到管道里
-1.创建管道
-2.打开源文件，管道文件
-3.循环读源文件，写管道
-4.关闭文件描述符
+1. 创建管道
+2. 打开源文件，管道文件
+3. 循环读源文件，写管道
+4. 关闭文件描述符
 ```c
 #include <stdio.h>
 #include <sys/types.h>
@@ -1927,10 +1927,10 @@ int main(int argc,char const *argv[])
 **思路**
 
 读管道，写到目标文件里面
-1.创建管道
-2.打开目标文件，管道文件
-3.循环读管道文件，写目标文件
-4.关闭文件描述符
+1. 创建管道
+2. 打开目标文件，管道文件
+3. 循环读管道文件，写目标文件
+4. 关闭文件描述符
 
 ```c
 #include <stdio.h>
@@ -1987,14 +1987,14 @@ kill -l 显示系统中的信号
 kill -num PID：给PID进程发送num信号
 
 ### 概念
-1）信号是在软件层次上对中断机制的一种模拟，是一种异步通信方式
-2）信号可以直接进行用户空间进程和内核进程之间的交互，内核进程也可以利用它来通知用户空间进程发生了哪些系统事件。
-3）如果该进程当前并未处于执行态，则该信号就由内核保存起来，直到该进程恢复执行再传递给它；如果一个信号被进程设置为阻塞，则该信号的传递被延迟，直到其阻塞被取消时才被传递给进程 
+1. 信号是在软件层次上对中断机制的一种模拟，是一种异步通信方式
+2. 信号可以直接进行用户空间进程和内核进程之间的交互，内核进程也可以利用它来通知用户空间进程发生了哪些系统事件。
+3. 如果该进程当前并未处于执行态，则该信号就由内核保存起来，直到该进程恢复执行再传递给它；如果一个信号被进程设置为阻塞，则该信号的传递被延迟，直到其阻塞被取消时才被传递给进程 
 
 ### 响应方式
-1）忽略信号：对信号不做任何处理，但是有两个信号不能忽略：即SIGKILL及SIGSTOP。
-2）捕捉信号：定义信号处理函数，当信号发生时，执行相应的处理函数。
-3）执行缺省操作：Linux对每种信号都规定了默认操作 
+1. 忽略信号：对信号不做任何处理，但是有两个信号不能忽略：即SIGKILL及SIGSTOP。
+2. 捕捉信号：定义信号处理函数，当信号发生时，执行相应的处理函数。
+3. 执行缺省操作：Linux对每种信号都规定了默认操作 
 
 ### 信号的种类
 
@@ -2110,10 +2110,10 @@ void (*)（int）sighandler 定义一个函数指针 不过C语言不支持=》 
 **练习**
 
 用信号的知识实现司机和售票员问题。
-1）售票员捕捉SIGINT（代表开车）信号，向司机发送SIGUSR1信号，司机打印（let's gogogo）
-2）售票员捕捉SIGQUIT（代表停车）信号，向司机发送SIGUSR2信号，司机打印（stop the bus）kill（pid，）
-3）司机捕捉SIGTSTP（代表到达终点站）信号，向售票员发送SIGUSR1信号，售票员打印（please get off the bus）
-4）司机等待售票员下车，之后司机再下车。fork（）wait（）
+1. 售票员捕捉SIGINT（代表开车）信号，向司机发送SIGUSR1信号，司机打印（let's gogogo）
+2. 售票员捕捉SIGQUIT（代表停车）信号，向司机发送SIGUSR2信号，司机打印（stop the bus）kill（pid，）
+3. 司机捕捉SIGTSTP（代表到达终点站）信号，向售票员发送SIGUSR1信号，售票员打印（please get off the bus）
+4. 司机等待售票员下车，之后司机再下车。fork（）wait（）
 
 **思路**
 
@@ -2199,10 +2199,10 @@ int main(int argc, char const *argv[])
 
 ### 特点
 
-1）共享内存是一种<font color=Red>最为高效的进程间通信方式</font>，进程可以直接读写内存，而不需要任何数据的拷贝
-2）为了在多个进程间交换信息，内核专门留出了一块内存区，可以由需要访问的进程将其映射到自己的私有地址空间
-3）进程就可以直接读写这一内存区而不需要进行数据的拷贝，从而大大提高的效率。
-4）由于多个进程共享一段内存，因此也需要依靠某种同步机制，如互斥锁和信号量等
+1. 共享内存是一种<font color=Red>最为高效的进程间通信方式</font>，进程可以直接读写内存，而不需要任何数据的拷贝
+2. 为了在多个进程间交换信息，内核专门留出了一块内存区，可以由需要访问的进程将其映射到自己的私有地址空间
+3. 进程就可以直接读写这一内存区而不需要进行数据的拷贝，从而大大提高的效率。
+4. 由于多个进程共享一段内存，因此也需要依靠某种同步机制，如互斥锁和信号量等
 
 **原理图**
 
@@ -2261,4 +2261,664 @@ int  shmctl(int  shmid,int  cmd,struct  shmid_ds   *buf);
 返回：成功0 
      失败-1
 用法：shmctl(shmid,IPC_RMID,NULL);
+```
+
+### 命令
+
+ipcs -m: 查看系统中的共享内存信息
+ipcrm -m shmid：删除共享内存
+
+**练习**
+
+两个进程实现通信，一个进程循环从终端输入，另一个进程循环打印，当输入quit时结束(标志位实现)
+```c
+//循环从终端获取，写到共享内存里
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <errno.h>
+#include <sys/shm.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+struct msg
+{
+    int flag;
+    char buf[32];
+};
+
+int main(int argc,char const *argv[])
+{
+    key_t key = ftok("./22.c",'1');
+    if(key < 0)
+    {
+        perror("ftok err");
+        return -1;
+    }
+    printf("%d\n",key);
+    int shmid = shmget(key,128,IPC_CREAT|IPC_EXCL|0666);
+    if(shmid < 0)
+    {
+        if(errno == EEXIST)
+            shmid = shmget(key,128,0666);
+        else
+        {
+            perror("shmget err");
+            return -1;
+        }
+    }
+    printf("%d\n",shmid);
+    struct msg *p = (struct msg*)shmat(shmid,NULL,0);
+    if(p == (void *)-1)
+    {
+        perror("shmat err");
+        return -1;
+    }
+    p->flag = 0;
+    while(1)
+    {
+            fgets(p->buf,32,stdin);
+                p->flag = 1;
+            if(strcmp(p->buf,"quit\n")==0)
+                break; 
+    }
+    shmdt(p);
+    //shmctl(shmid,IPC_RMID,NULL);    
+    return 0;
+}
+```
+
+```c
+//循环从共享内存中读取数据打印到终端
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <errno.h>
+#include <sys/shm.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+struct msg
+{
+    int flag;
+    char buf[32];
+};
+
+int main(int argc,char const *argv[])
+{
+    key_t key = ftok("./22.c",'1');
+    if(key < 0)
+    {
+        perror("ftok err");
+        return -1;
+    }
+    printf("%d\n",key);
+    int shmid = shmget(key,128,IPC_CREAT|IPC_EXCL|0666);
+    if(shmid < 0)
+    {
+        if(errno == EEXIST)
+            shmid = shmget(key,128,0666);
+        else
+        {
+            perror("shmget err");
+            return -1;
+        }
+    }
+    printf("%d\n",shmid);
+    struct msg *p = (struct msg*)shmat(shmid,NULL,0);
+    if(p == (void *)-1)
+    {
+        perror("shmat err");
+        return -1;
+    }
+    while(1)
+    {
+        if(p->flag == 1)
+        {
+            if(strcmp(p->buf,"quit\n")==0)
+                break;
+            fputs(p->buf,stdout);
+             p->flag = 0; 
+        }
+          
+    }
+    shmdt(p);
+    shmctl(shmid,IPC_RMID,NULL);    
+    return 0;
+}
+```
+
+## 信号灯集
+
+### 概念
+
+信号灯(semaphore)，也叫信号量。它是不同进程间或一个给定进程内部不同线程间同步的机制；System V的信号灯是一个或者多个信号灯的一个集合。其中的每一个都是单独的计数信号灯。而Posix信号灯指的是单个计数信号灯。
+通过信号灯集实现共享内存的同步操作。
+
+### 步骤
+
+1. 创建或打开信号灯集：semget（semaphore）
+2. 初始化信号灯：semctl
+3. PV操作:semop
+4. 删除信号灯集:semctl
+
+### 函数
+
+```c
+int semget(key_t key, int nsems, int semflg);
+功能：创建/打开信号灯
+参数：key：ftok产生的key值
+    nsems：信号灯集中包含的信号灯数目  //创建  IPC_EXCL 判错处理
+    semflg：信号灯集的访问权限，通常为IPC_CREAT |0666 //权限码
+返回值：成功：信号灯集ID
+       失败：-1
+int semctl ( int semid, int semnum,  int cmd…/*union semun arg*/);
+功能：信号灯集合的控制（初始化/删除）
+参数：semid：信号灯集ID
+    semnum: 要操作的集合中的信号灯编号
+     cmd：
+        GETVAL：获取信号灯的值，返回值是获得值
+        SETVAL：设置信号灯的值，需要用到第四个参数：共用体
+        IPC_RMID：从系统中删除信号灯集合
+返回值：成功 0
+      失败 -1
+用法：初始化：
+union semun{
+    int val;
+}mysemun;
+mysemun.val = 10;
+semctl(semid, 0, SETVAL, mysemun);//0 信号灯的编号 
+获取信号灯值：函数semctl(semid, 0, GETVAL)的返回值
+删除信号灯集：semctl(semid, 0, IPC_RMID);
+int semop ( int semid, struct sembuf  *opsptr,  size_t  nops);
+功能：对信号灯集合中的信号量进行PV操作
+参数：semid：信号灯集ID
+     opsptr:操作方式
+     nops:  要操作的信号灯的个数 1个
+返回值：成功 ：0
+      失败：-1
+struct sembuf {
+   short  sem_num; // 要操作的信号灯的编号
+   short  sem_op;  //    0 :  等待，直到信号灯的值变成0
+                   //   1  :  释放资源，V操作
+                   //   -1 :  申请资源，P操作                    
+    short  sem_flg; // 0（阻塞）,IPC_NOWAIT, SEM_UNDO
+};
+```
+
+### 命令
+
+ipcs -s:查看信号灯集
+ipcrm -s semid：删除信号灯集
+
+**练习**
+
+两个进程实现通信，一个进程循环从终端输入，另一个进程循环打印，当输入quit时结束  信号灯集+共享内存
+
+```c
+//循环从终端获取，写到共享内存里
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
+#include <errno.h>
+
+union semun 
+{
+    int val;
+};
+
+int main(int argc,char const *argv[])
+{
+    key_t key = ftok("./22.c",'1');
+    if(key < 0)
+    {
+        perror("ftok err");
+        return -1;
+    }
+    int shmid = shmget(key,128,IPC_CREAT|IPC_EXCL|0666);
+    if(shmid < 0)
+    {
+        if(errno == EEXIST)
+            shmid = shmget(key,128,0666);
+        else
+        {
+            perror("shmget err");
+            return -1;
+        }
+    }
+    char *p = (char *)shmat(shmid,NULL,0);
+    if(p == (void *)-1)
+    {
+        perror("shmat err");
+        return -1;
+    }
+    int semid = semget(key,1,IPC_CREAT|IPC_EXCL|0666);
+    if(semid <= 0)
+    {
+        if(errno == EEXIST)
+            semid = semget(key,1,0666);
+        else
+        {
+            perror("semget err");
+            return -1;
+        }
+    }
+    else
+    {
+        union semun sem_un;
+        sem_un.val = 0;
+        semctl(semid,0,SETVAL,sem_un);
+    }
+    printf("shmid:%d\n",shmid);
+    printf("semid:%d\n",semid);
+
+    struct sembuf sem_buf;
+    sem_buf.sem_num=0;
+    while(1)
+    {
+        fgets(p,32,stdin);
+        sem_buf.sem_op=1;
+        semop(semid,&sem_buf,1);
+        if(!strcmp(p,"quit\n"))
+            break;
+    }
+    shmdt(p);
+    return 0;
+}
+
+```
+
+```c
+//循环从共享内存中读取数据打印到终端
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
+#include <errno.h>
+
+union semun 
+{
+    int val;
+};
+
+int main(int argc,char const *argv[])
+{
+    key_t key = ftok("./22.c",'1');
+    if(key < 0)
+    {
+        perror("ftok err");
+        return -1;
+    }
+    int shmid = shmget(key,128,IPC_CREAT|IPC_EXCL|0666);
+    if(shmid < 0)
+    {
+        if(errno == EEXIST)
+            shmid = shmget(key,128,0666);
+        else
+        {
+            perror("shmget err");
+            return -1;
+        }
+    }
+    char *p = (char *)shmat(shmid,NULL,0);
+    if(p == (void *)-1)
+    {
+        perror("shmat err");
+        return -1;
+    }
+    int semid = semget(key,1,IPC_CREAT|IPC_EXCL|0666);
+    if(semid <= 0)
+    {
+        if(errno == EEXIST)
+            semid = semget(key,1,0666);
+        else
+        {
+            perror("semget err");
+            return -1;
+        }
+    }
+    else
+    {
+        union semun sem_un;
+        sem_un.val = 0;
+        semctl(semid,0,SETVAL,sem_un);
+    }
+    printf("shmid:%d\n",shmid);
+    printf("semid:%d\n",semid);
+
+    struct sembuf sem_buf;
+    while(1)
+    {
+        sem_buf.sem_num=0;
+        sem_buf.sem_op=-1;
+        sem_buf.sem_flg=0;
+        semop(semid,&sem_buf,1);
+        if(!strcmp(p,"quit\n"))
+            break;
+         fputs(p,stdout);
+    }
+    shmdt(p);
+    shmctl(shmid,IPC_RMID,NULL);
+    return 0;
+}
+```
+**封装函数,初始化/pv操作**
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+int shmid, semid;
+struct sembuf buf;
+union semun {
+    int val;
+};
+char *p;
+
+void semInit(int semid, int num,int val ) //初始化信号灯集
+{
+    union semun sem;                 //定义一个共用体变量
+    sem.val = val;                   //设置信号灯的值
+    semctl(semid, num, SETVAL, sem); //初始化信号灯
+}
+void PorV(int num, int op, int semid) //p 申请操作 v 释放操作
+{
+
+    buf.sem_num = num;     //信号灯的编号
+    buf.sem_op = op;       //p v 操作
+    buf.sem_flg = 0;       //阻塞，表示semop函数的操作是阻塞的，直到操作成功为止，申请（-1）才会阻塞
+    semop(semid, &buf, 1); //操作的 buf 全部变量信号灯集
+}
+
+int main(int argc, char const *argv[])
+{
+    key_t key = ftok("./1.c", 'a'); //创建key值
+    if (key < 0)
+    {
+        perror("ftok err\n");
+        return -1;
+    }
+    shmid = shmget(key, 128, IPC_CREAT | IPC_EXCL | 0666); //创建或打开内存空间
+    if (shmid < 0)
+    {
+        if (errno == EEXIST)
+            shmid = shmget(key, 128, 0666);
+        else
+        {
+            perror("shmget err\n");
+            return -1;
+        }
+    }
+    printf("shmid:%d\n", shmid);
+
+    p = (char *)shmat(shmid, NULL, 0); //映射，返回地址，即把指定的共享内存映射到进程的地址空间用于访问
+    if (p == (void *)-1)
+    {
+        perror("shmat err\n");
+        return -1;
+    }
+
+    semid = semget(key, 1, IPC_CREAT | IPC_EXCL | 0666); //创建或打开信号灯集
+    if (semid < 0)
+    {
+        if (errno == EEXIST) //存在就加权限打开
+            semid = semget(key, 1, 0666);
+        else
+        {
+            perror("semget err\n");
+            return -1;
+        }
+    }
+    else
+    {
+        semInit(semid,0,0);
+    }
+
+    while (1)
+    {
+        
+        PorV(0,-1 ,semid); //p操作 申请操作
+        if (strcmp(p, "quit") == 0)
+            break;
+        printf("%s\n",p);
+    }
+    shmdt(p);
+    shmctl(shmid, IPC_RMID, NULL); //删除共享内存
+    semctl(semid, 0, IPC_RMID);    //删除信号灯集
+
+    return 0;
+}
+```
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+
+int shmid,semid;
+struct sembuf buf;
+union semun 
+{
+    int val;
+};
+union semun sem;
+char *p;
+void semInit(int semid,int num,int val) //初始化信号灯集
+{
+    union semun sem;//定义一个共用体变量
+    sem.val = val; //设置信号灯的值
+    semctl(semid,num,SETVAL,sem);//初始化信号灯
+}
+void PorV(int num,int op,int semid) //p 申请操作 v 释放操作
+{
+    
+    buf.sem_num = num;//信号灯的编号
+    buf.sem_op = op; //p v 操作
+    buf.sem_flg = 0; //阻塞，表示semop函数的操作是阻塞的，直到操作成功为止，申请（-1）才会阻塞
+    semop(semid,&buf,1);//操作的 buf 全部变量信号灯集
+}
+
+int main(int argc, char const *argv[])
+{
+    
+    key_t key =ftok("./1.c",'a');//创建key值
+    if(key < 0)
+    {
+        perror("ftok err\n");
+        return -1;
+    }
+    shmid = shmget(key,128,IPC_CREAT | IPC_EXCL | 0666);//创建或打开内存空间
+    if(shmid <= 0)
+    {
+        if(errno == EEXIST)
+            shmid = shmget(key,128,0666);
+        else
+        {
+            perror("shmget err\n");
+            return -1;
+        }
+    }
+    printf("shmid:%d\n",shmid);
+    p = (char *)shmat(shmid,NULL,0);//映射，返回地址，即把指定的共享内存映射到进程的地址空间用于访问
+    if(p == (void *)-1)
+    {
+        perror("shmat err\n");
+        return -1;
+    }
+    semid = semget(key,1,IPC_CREAT | IPC_EXCL | 0666);//创建或打开信号灯集
+    if(semid <= 0)
+    {
+        if(errno == EEXIST) //存在就加权限打开
+            semid = semget(key,1,0666);
+        else
+        {
+            perror("semget err\n");
+            return -1;
+        }
+    }
+    else
+    {
+        //semctl(semid,1,0);
+        semInit(semid,0,0);
+    }
+    
+      
+    while(1)
+    {
+        scanf("%s",p);
+        // fgets(p,10,stdin);
+        PorV(0,1,semid);//v操作 释放操作
+        //printf("%s\n",p);
+        if(strcmp(p,"quit")==0)
+            break;
+    }
+    shmdt(p);  
+    // shmctl(shmid,IPC_RMID,NULL);//删除共享内存
+    // semctl(semid,0,IPC_RMID); //删除信号灯集 
+
+    
+    return 0;
+}
+```
+
+## 消息队列
+### 特点
+
+消息队列是IPC对象的一种
+消息队列由消息队列ID来唯一标识
+消息队列就是一个消息的列表。用户可以在消息队列中添加消息、读取消息等。
+消息队列可以按照类型来发送(添加)/接收（读取）消息
+
+### 步骤
+
+1. 创建key值 ftok
+2. 创建或打开消息队列 msgget
+3. 添加消息 msgsnd
+4. 读取消息 msgrcv
+5. 删除消息队列 msgctl
+   
+### 函数
+
+```c
+int msgget(key_t key, int flag);
+功能：创建或打开一个消息队列
+参数：  key值
+       flag：创建消息队列的权限IPC_CREAT|IPC_EXCL|0666
+返回值：成功：msgid
+       失败：-1
+int msgsnd(int msqid, const void *msgp, size_t size, int flag); 
+功能：添加消息
+参数：msqid：消息队列的ID
+      msgp：指向消息的指针。常用消息结构msgbuf如下：
+          struct msgbuf{
+            long mtype;          //消息类型
+            char mtext[N]}；   //消息正文
+   size：发送的消息正文的字节数
+   flag：IPC_NOWAIT消息没有发送完成函数也会立即返回    
+         0：直到发送完成函数才返回
+返回值：成功：0
+      失败：-1
+使用：msgsnd(msgid, &msg,sizeof(msg)-sizeof(long), 0)
+注意：消息结构除了第一个成员必须为long类型外，其他成员可以根据应用的需求自行定义。
+int msgrcv(int msgid,  void* msgp,  size_t  size,  long msgtype,  int  flag);
+功能：读取消息
+参数：msgid：消息队列的ID
+     msgp：存放读取消息的空间
+     size：接受的消息正文的字节数
+    msgtype：0：接收消息队列中第一个消息。
+            大于0：接收消息队列中第一个类型为msgtyp的消息.
+            小于0：接收消息队列中类型值不小于msgtyp的绝对值且类型值又最小的消息。
+     flag：0：若无消息函数会一直阻塞
+        IPC_NOWAIT：若没有消息，进程会立即返回ENOMSG
+返回值：成功：接收到的消息的长度
+      失败：-1
+int msgctl ( int msgqid, int cmd, struct msqid_ds *buf );
+功能：对消息队列的操作，删除消息队列
+参数：msqid：消息队列的队列ID
+     cmd：
+        IPC_STAT：读取消息队列的属性，并将其保存在buf指向的缓冲区中。
+        IPC_SET：设置消息队列的属性。这个值取自buf参数。
+        IPC_RMID：从系统中删除消息队列。
+     buf：消息队列缓冲区
+返回值：成功：0
+      失败：-1
+用法：msgctl（msgid, IPC_RMID, NULL）
+```
+### 命令
+
+ipcs -q ：查看消息队列
+ipcrm -q msgid ：删除消息队列
+
+**实现**
+
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include <errno.h>
+#include <string.h>
+struct msg
+{
+    long type;
+    char name[32];
+    int id;
+
+};
+int main(int argc , char const *argv[])
+{
+    key_t key = ftok("./22.c",'1');
+    if(key < 0)
+    {
+        perror("ftok err");
+        return -1;
+    }
+    int msgid = msgget(key,IPC_CREAT|IPC_EXCL|0666);
+    if(msgid <= 0)
+    {
+        if(errno == EEXIST)
+            msgid = msgget(key,0666);
+        else
+        {
+            perror("msgget err");
+            return -1;
+        }
+    }
+    printf("msgid:%d\n",msgid);
+    struct msg msg_buf;
+    msg_buf.type=1;
+    strcpy(msg_buf.name,"王洁");
+    msg_buf.id = 9;
+    msgsnd(msgid,&msg_buf,sizeof(msg_buf)-sizeof(long),0);
+
+    struct msg msg_buff;
+    msgrcv(msgid,&msg_buff,sizeof(msg_buff)-sizeof(long),1,0);
+
+    printf("name:%s\n",msg_buff.name);
+    printf("id:%d\n",msg_buff.id);
+    printf("type:%ld\n",msg_buff.type);
+    return 0;
+}
 ```
